@@ -10,3 +10,12 @@ func (u *usecase) AddNewWords(inp models.Word) (err error) {
 
 	return nil
 }
+
+func (u *usecase) GetListWords() (words []models.Words, err error) {
+	words, err = u.repository.GetListWord()
+	if err != nil {
+		return
+	}
+
+	return words, nil
+}

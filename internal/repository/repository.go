@@ -1,11 +1,13 @@
 package repository
 
 import (
+	"github.com/aszanky/newords-go-be/internal/models"
 	"github.com/jmoiron/sqlx"
 )
 
 type Repository interface {
 	AddNewWords(word, indonesian, notes string) (err error)
+	GetListWord() (words []models.Words, err error)
 }
 
 type repository struct {

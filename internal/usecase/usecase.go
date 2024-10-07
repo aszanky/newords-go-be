@@ -7,6 +7,7 @@ import (
 
 type Usecase interface {
 	AddNewWords(inp models.Word) (err error)
+	GetListWords() (words []models.Words, err error)
 }
 
 type usecase struct {
