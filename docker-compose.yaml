@@ -1,7 +1,29 @@
 version: '3.9'
 
 services:
-  postgres:
+  newords:
+    image: newords-go-be
+    container_name: newords-go-be
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    env_file:
+      - .env
+    # environment:
+    #   - POSTGRES_HOST=db  # Ganti localhost dengan db
+    #   - POSTGRES_PORT=5432
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_DB=newords
+    #   - POSTGRES_PASSWORD=postgres
+    ports:
+      - '8090:8090' # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    # networks:
+    #   - network
+    depends_on:
+      - db
+
+  db:
     image: postgres:14-alpine
     ports:
       - 5432:5432

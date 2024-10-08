@@ -1,27 +1,28 @@
-# syntax=docker/dockerfile:1
+FROM golang:1.20-alpine AS builder
 
-FROM golang:1.19
-
-# Set destination for COPY
 WORKDIR /app
 
-# Download Go modules
+ENV GO111MODULE=on
+
+# Copy go mod and sum files
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the source code. Note the slash at the end, as explained in
-# https://docs.docker.com/reference/dockerfile/#copy
-COPY *.go ./
+# Copy the rest of the application files
+COPY . .
 
-# Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /newords-go-be
+# Copy .env file
+COPY .env .env
 
-# Optional:
-# To bind to a TCP port, runtime parameters must be supplied to the docker command.
-# But we can document in the Dockerfile what ports
-# the application is going to listen on by default.
-# https://docs.docker.com/reference/dockerfile/#expose
-EXPOSE 8080
+# Build the Go application
+RUN go build -o /newords-go-be
 
-# Run
-CMD ["/newords-go-be"]
+EXPOSE 8090
+
+# Use a minimal image to run the Go application
+# Multi stage build 
+FROM scratch
+
+COPY --from=builder /newords-go-be /newords-go-be
+
+ENTRYPOINT ["/newords-go-be"]
